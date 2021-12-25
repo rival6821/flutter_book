@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tabbar_example/sub/firstPage.dart';
-import 'package:tabbar_example/sub/secondPage.dart';
+import 'package:listview_example/sub/firstPage.dart';
+import 'package:listview_example/sub/secondPage.dart';
+import './animalItem.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,11 +34,21 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin{
   TabController? controller;
+  List<Animal> animalList = new List.empty(growable: true);
 
   @override
   void initState(){
     super.initState();
     controller = TabController(length: 2, vsync: this);
+
+    animalList.add(Animal(animalName: '벌', kind: '곤충', imagePath: 'repo/images/bee.png'));
+    animalList.add(Animal(animalName: '고양이', kind: '포유류', imagePath: 'repo/images/cat.png'));
+    animalList.add(Animal(animalName: '젖소', kind: '포유류', imagePath: 'repo/images/cow.png'));
+    animalList.add(Animal(animalName: '강아지', kind: '포유류', imagePath: 'repo/images/dog.png'));
+    animalList.add(Animal(animalName: '여우', kind: '포유류', imagePath: 'repo/images/fox.png'));
+    animalList.add(Animal(animalName: '원숭이', kind: '영장류', imagePath: 'repo/images/monkey.png'));
+    animalList.add(Animal(animalName: '돼지', kind: '포유류', imagePath: 'repo/images/pig.png'));
+    animalList.add(Animal(animalName: '늑대', kind: '포유류', imagePath: 'repo/images/wolf.png'));
   }
 
   @override
@@ -50,10 +61,10 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('TabBar Example'),
+        title: Text('ListView Example'),
       ),
       body: TabBarView(
-        children: <Widget>[FirstApp(), SecondApp()],
+        children: <Widget>[FirstApp(list: animalList), SecondApp()],
         controller: controller
       ),
       bottomNavigationBar: TabBar(
