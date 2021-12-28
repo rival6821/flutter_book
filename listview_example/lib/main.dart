@@ -34,7 +34,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin{
   TabController? controller;
-  List<Animal> animalList = new List.empty(growable: true);
+  List<Animal> animalList = List.empty(growable: true);
 
   @override
   void initState(){
@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         title: Text('ListView Example'),
       ),
       body: TabBarView(
-        children: <Widget>[FirstApp(list: animalList), SecondApp()],
+        children: <Widget>[FirstApp(list: animalList), SecondApp(list: animalList)],
         controller: controller
       ),
       bottomNavigationBar: TabBar(

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import '../animalItem.dart';
 
@@ -62,7 +60,7 @@ class _SecondApp extends State<SecondApp> {
                         })
                   ],
                 ),
-                SizedBox(
+                Container(
                   height: 100,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
@@ -150,7 +148,6 @@ class _SecondApp extends State<SecondApp> {
                         actions: [
                           ElevatedButton(onPressed: (){
                             widget.list?.add(animal);
-                            log('yes', error: animal);
                             Navigator.of(context).pop();
                           }, child: const Text('예')),
                           ElevatedButton(onPressed: (){
