@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+Future main() async {
+  await dotenv.load(fileName: ".env");
   runApp(MyApp());
 }
 
@@ -28,18 +30,25 @@ class HttpApp extends StatefulWidget {
 class _HttpApp extends State<HttpApp> {
   String result = '';
   List? data;
+  TextEditingController? _editingController;
 
   @override
   void initState(){
     super.initState();
     data = new List.empty(growable: true);
+    _editingController = new TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Http Example'),
+        title: TextField(
+          controller: _editingController,
+          style: TextStyle(color: Colors.white),
+          keyboardType: TextInputType.text,
+          decoration: InputDecoration(hintText: '검색어를 입력하세요'),
+        ),
       ),
       body: Container(
         child: Center(
@@ -90,7 +99,7 @@ class _HttpApp extends State<HttpApp> {
 
   Future<String> getJSONData() async {
     var url = 'https://dapi.kakao.com/v3/search/book?target=title&query=doit';
-    var key = '';
+    var key = dotenv.env['KAKAO_KEY'] ?? '';
     var response = await http.get(Uri.parse(url),
       headers: {"Authorization": 'KakaoAK ${key}'}
     );
