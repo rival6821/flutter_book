@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:intl/intl.dart';
 
-Future main() async {
-  await dotenv.load(fileName: ".env");
+Future<void> main() async {
+  await dotenv.load();
   runApp(MyApp());
 }
 
@@ -31,12 +32,25 @@ class _HttpApp extends State<HttpApp> {
   String result = '';
   List? data;
   TextEditingController? _editingController;
+  ScrollController? _scrollController;
+  int page = 1;
+  var numFormat = NumberFormat.currency(locale: "ko_KR", name: "", decimalDigits: 0);
 
   @override
   void initState(){
     super.initState();
     data = new List.empty(growable: true);
     _editingController = new TextEditingController();
+    _scrollController = new ScrollController();
+
+    _scrollController!.addListener(() {
+      if (_scrollController!.offset >= _scrollController!.position.maxScrollExtent
+      && !_scrollController!.position.outOfRange){
+        print('bottom');
+        page++;
+        getJSONData();
+      }
+    });
   }
 
   @override
@@ -75,7 +89,7 @@ class _HttpApp extends State<HttpApp> {
                           ),
                         ),
                         Text('저자: ${data![index]['authors'].toString()}'),
-                        Text('가격: ${data![index]['sale_price'].toString()}'),
+                        Text('가격: ${numFormat.format(data![index]['sale_price'])} 원'),
                         Text('판매중: ${data![index]['status'].toString()}'),
                       ],
                     )
@@ -85,11 +99,14 @@ class _HttpApp extends State<HttpApp> {
               ),
             );
           },
-          itemCount: data!.length,)
+          itemCount: data!.length,
+          controller: _scrollController,)
         )
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          page = 1;
+          data!.clear();
           getJSONData();
         },
         child: Icon(Icons.file_download),
@@ -98,7 +115,7 @@ class _HttpApp extends State<HttpApp> {
   }
 
   Future<String> getJSONData() async {
-    var url = 'https://dapi.kakao.com/v3/search/book?target=title&query=doit';
+    var url = 'https://dapi.kakao.com/v3/search/book?target=title&page=$page&query=${_editingController!.value.text}';
     var key = dotenv.env['KAKAO_KEY'] ?? '';
     var response = await http.get(Uri.parse(url),
       headers: {"Authorization": 'KakaoAK ${key}'}
