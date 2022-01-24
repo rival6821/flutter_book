@@ -46,13 +46,96 @@ class DatabaseApp extends StatefulWidget {
 }
 
 class _DatabaseApp extends State<DatabaseApp> {
+  Future<List<Todo>>? todoList;
+
+  @override
+  void initState() {
+    super.initState();
+    todoList = getTodos();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Database Example'),
       ),
-      body: Container(),
+      body: Scaffold(
+        body: Center(
+          child: FutureBuilder(
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                  return CircularProgressIndicator();
+                case ConnectionState.waiting:
+                  return CircularProgressIndicator();
+                case ConnectionState.active:
+                  return CircularProgressIndicator();
+                case ConnectionState.done:
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                      itemBuilder: (context, index) {
+                        Todo todo = (snapshot.data as List<Todo>)[index];
+                        return ListTile(
+                          title: Text(
+                            todo.title!,
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          subtitle: Container(
+                            child: Column(
+                              children: [
+                                Text(todo.content!),
+                                Text(
+                                    '체크${todo.active == 1 ? 'true' : 'false'}'),
+                                Container(
+                                  height: 1,
+                                  color: Colors.blue,
+                                )
+                              ],
+                            ),
+                          ),
+                          onTap: () async {
+                            Todo result = await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('${todo.id} : ${todo.title}'),
+                                    content: Text('Todo를 체크하시겠습니까?'),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              todo.active == 1
+                                                  ? todo.active = 0
+                                                  : todo.active = 1;
+                                            });
+                                            Navigator.of(context).pop(todo);
+                                          },
+                                          child: Text('예')),
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop(todo);
+                                          },
+                                          child: Text('아니오'))
+                                    ],
+                                  );
+                                });
+                            _updateTodo(result);
+                          },
+                        );
+                      },
+                      itemCount: (snapshot.data as List<Todo>).length,
+                    );
+                  } else {
+                    return Text('No data');
+                  }
+              }
+              return CircularProgressIndicator();
+            },
+            future: todoList,
+          ),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final todo = await Navigator.of(context).pushNamed('/add');
@@ -66,9 +149,35 @@ class _DatabaseApp extends State<DatabaseApp> {
     );
   }
 
+  void _updateTodo(Todo todo) async {
+    final Database database = await widget.db;
+    await database
+        .update('todos', todo.toMap(), where: 'id = ?', whereArgs: [todo.id]);
+    setState(() {
+      todoList = getTodos();
+    });
+  }
+
   void _insertTodo(Todo todo) async {
     final Database database = await widget.db;
     await database.insert('todos', todo.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
+    setState(() {
+      todoList = getTodos();
+    });
+  }
+
+  Future<List<Todo>> getTodos() async {
+    final Database database = await widget.db;
+    final List<Map<String, dynamic>> maps = await database.query('todos');
+
+    return List.generate(maps.length, (i) {
+      int active = maps[i]['active'] == 1 ? 1 : 0;
+      return Todo(
+          title: maps[i]['title'].toString(),
+          content: maps[i]['content'].toString(),
+          active: active,
+          id: maps[i]['id']);
+    });
   }
 }
