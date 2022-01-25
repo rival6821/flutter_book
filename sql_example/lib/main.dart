@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sql_example/AddTodoApp.dart';
+import 'package:sql_example/clearList.dart';
 import 'package:sql_example/todo.dart';
 
 void main() {
@@ -23,7 +24,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => DatabaseApp(database),
-        '/add': (context) => AddTodoApp(database)
+        '/add': (context) => AddTodoApp(database),
+        '/clear': (context) => ClearListApp(database),
       },
     );
   }
@@ -59,6 +61,19 @@ class _DatabaseApp extends State<DatabaseApp> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Database Example'),
+        actions: [
+          TextButton(
+              onPressed: () async {
+                await Navigator.of(context).pushNamed('/clear');
+                setState(() {
+                  todoList = getTodos();
+                });
+              },
+              child: Text(
+                '완료한일',
+                style: TextStyle(color: Colors.white),
+              ))
+        ],
       ),
       body: Scaffold(
         body: Center(
