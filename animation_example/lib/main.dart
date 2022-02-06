@@ -29,6 +29,7 @@ class _AnimationApp extends State<AnimationApp> {
   List<People> peoples = List.empty(growable: true);
   Color weightColor = Colors.blue;
   int current = 0;
+  double _opacity = 1;
 
   @override
   void initState() {
@@ -50,51 +51,55 @@ class _AnimationApp extends State<AnimationApp> {
           child: Center(
             child: Column(
               children: [
-                SizedBox(
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 100,
-                        child: Text('이름 : ${peoples[current].name}'),
-                      ),
-                      AnimatedContainer(
-                        duration: Duration(seconds: 2),
-                        curve: Curves.bounceIn,
-                        color: Colors.amber,
-                        child: Text(
-                          '키 ${peoples[current].height}',
-                          textAlign: TextAlign.center,
+                AnimatedOpacity(
+                  opacity: _opacity,
+                  duration: Duration(seconds: 1),
+                  child: SizedBox(
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 100,
+                          child: Text('이름 : ${peoples[current].name}'),
                         ),
-                        width: 50,
-                        height: peoples[current].height,
-                      ),
-                      AnimatedContainer(
-                        duration: Duration(seconds: 2),
-                        curve: Curves.easeInCubic,
-                        color: weightColor,
-                        child: Text(
-                          '몸무게 ${peoples[current].weight}',
-                          textAlign: TextAlign.center,
+                        AnimatedContainer(
+                          duration: Duration(seconds: 2),
+                          curve: Curves.bounceIn,
+                          color: Colors.amber,
+                          child: Text(
+                            '키 ${peoples[current].height}',
+                            textAlign: TextAlign.center,
+                          ),
+                          width: 50,
+                          height: peoples[current].height,
                         ),
-                        width: 50,
-                        height: peoples[current].weight,
-                      ),
-                      AnimatedContainer(
-                        duration: Duration(seconds: 2),
-                        curve: Curves.linear,
-                        color: Colors.pinkAccent,
-                        child: Text(
-                          'bmi ${peoples[current].bmi.toString().substring(0, 2)}',
-                          textAlign: TextAlign.center,
+                        AnimatedContainer(
+                          duration: Duration(seconds: 2),
+                          curve: Curves.easeInCubic,
+                          color: weightColor,
+                          child: Text(
+                            '몸무게 ${peoples[current].weight}',
+                            textAlign: TextAlign.center,
+                          ),
+                          width: 50,
+                          height: peoples[current].weight,
                         ),
-                        width: 50,
-                        height: peoples[current].bmi,
-                      ),
-                    ],
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                        AnimatedContainer(
+                          duration: Duration(seconds: 2),
+                          curve: Curves.linear,
+                          color: Colors.pinkAccent,
+                          child: Text(
+                            'bmi ${peoples[current].bmi.toString().substring(0, 2)}',
+                            textAlign: TextAlign.center,
+                          ),
+                          width: 50,
+                          height: peoples[current].bmi,
+                        ),
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                    ),
+                    height: 200,
                   ),
-                  height: 200,
                 ),
                 ElevatedButton(
                     onPressed: () {
@@ -116,6 +121,13 @@ class _AnimationApp extends State<AnimationApp> {
                       });
                     },
                     child: Text('이전')),
+                ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _opacity = _opacity == 1 ? 0 : 1;
+                      });
+                    },
+                    child: Text('사라지기')),
               ],
               mainAxisAlignment: MainAxisAlignment.center,
             ),
