@@ -1,3 +1,4 @@
+import 'package:animation_example/intro.dart';
 import 'package:animation_example/people.dart';
 import 'package:animation_example/secondPage.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: AnimationApp(),
+      home: IntroPage(),
     );
   }
 }
