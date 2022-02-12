@@ -21,6 +21,27 @@ class _SliverPageState extends State<SliverPage> {
               background: Image.asset('repo/images/sunny.png'),
             ),
             backgroundColor: Colors.deepOrangeAccent,
+            pinned: true,
+          ),
+          SliverPersistentHeader(
+            delegate: _HeaderDelegate(
+                minHeight: 50,
+                maxHeight: 150,
+                child: Container(
+                  color: Colors.blue,
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          'list 숫자',
+                          style: TextStyle(fontSize: 30),
+                        ),
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.center,
+                    ),
+                  ),
+                )),
+            pinned: true,
           ),
           SliverList(
               delegate: SliverChildListDelegate([
@@ -29,6 +50,26 @@ class _SliverPageState extends State<SliverPage> {
             customCard('3'),
             customCard('4'),
           ])),
+          SliverPersistentHeader(
+            delegate: _HeaderDelegate(
+                minHeight: 50,
+                maxHeight: 150,
+                child: Container(
+                  color: Colors.blue,
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          '그리드 숫자',
+                          style: TextStyle(fontSize: 30),
+                        ),
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.center,
+                    ),
+                  ),
+                )),
+            pinned: true,
+          ),
           SliverGrid(
               delegate: SliverChildListDelegate([
                 customCard('1'),
