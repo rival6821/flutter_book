@@ -13,6 +13,7 @@ class _SendDataExampleState extends State<SendDataExample> {
 
   TextEditingController controller = TextEditingController();
   String _changeText = 'Nothing';
+  String _reChangeText = 'Nothing';
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,22 @@ class _SendDataExampleState extends State<SendDataExample> {
             Text(
               _changeText,
               style: TextStyle(fontSize: 20),
-            )
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  _decodeText(_changeText);
+                },
+                child: Text('디코딩하기')),
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+              _reChangeText,
+              style: TextStyle(fontSize: 20),
+            ),
           ],
           mainAxisAlignment: MainAxisAlignment.center,
         )),
@@ -52,6 +68,13 @@ class _SendDataExampleState extends State<SendDataExample> {
     final String result = await platform.invokeMethod('getEncrypto', text);
     setState(() {
       _changeText = result;
+    });
+  }
+
+  void _decodeText(String text) async {
+    final String result = await platform.invokeMethod('getDecode', text);
+    setState(() {
+      _reChangeText = result;
     });
   }
 }

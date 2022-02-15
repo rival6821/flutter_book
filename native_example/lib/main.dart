@@ -43,6 +43,7 @@ class NativeApp extends StatefulWidget {
 
 class _NativeApp extends State<StatefulWidget> {
   static const platform = const MethodChannel('com.flutter.dev/info');
+  static const platform3 = const MethodChannel('com.flutter.dev/dialog');
   String _deviceInfo = 'Unknown info';
 
   @override
@@ -79,5 +80,12 @@ class _NativeApp extends State<StatefulWidget> {
     setState(() {
       _deviceInfo = deviceInfo;
     });
+  }
+
+  Future<void> _showDialog() async {
+    try {
+      await platform.invokeMethod('showDialog');
+    } on PlatformException catch (e) {
+    }
   }
 }
