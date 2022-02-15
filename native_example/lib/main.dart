@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       return MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(primarySwatch: Colors.blue),
-        home: SendDataExample(),
+        home: NativeApp(),
       );
     }
   }
@@ -54,10 +54,14 @@ class _NativeApp extends State<StatefulWidget> {
       ),
       body: Container(
         child: Center(
-          child: Text(
-            _deviceInfo,
-            style: TextStyle(fontSize: 30),
-          ),
+          child: Column(
+            children: [
+              Text(_deviceInfo, style: TextStyle(fontSize: 30),),
+              TextButton(onPressed: (){
+                _showDialog();
+              }, child: Text('네이티브 창 열기'))
+            ],
+          )
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -84,7 +88,7 @@ class _NativeApp extends State<StatefulWidget> {
 
   Future<void> _showDialog() async {
     try {
-      await platform.invokeMethod('showDialog');
+      await platform3.invokeMethod('showDialog');
     } on PlatformException catch (e) {
     }
   }
