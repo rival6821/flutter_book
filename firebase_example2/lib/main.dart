@@ -1,5 +1,6 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_example2/tabsPage.dart';
 import 'package:flutter/material.dart';
 
 // void main() => runApp(MyApp());
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      navigatorObservers: <NavigatorObserver>[],
+      navigatorObservers: <NavigatorObserver>[observer],
       home: FirebaseApp(
         analytics: analytics,
         observer: observer
@@ -79,7 +80,11 @@ class _FirebaseAppState extends State<FirebaseApp> {
           mainAxisAlignment: MainAxisAlignment.center,
         ),
       ),
-      floatingActionButton: FloatingActionButton(child: const Icon(Icons.tab), onPressed: (){},),
+      floatingActionButton: FloatingActionButton(child: const Icon(Icons.tab), onPressed: (){
+        Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+          return TabsPage(observer);
+        }, settings: RouteSettings(name: '/tab')));
+      },),
     );
   }
 }
