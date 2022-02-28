@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_example2/memo.dart';
 import 'package:firebase_example2/memoAdd.dart';
+import 'package:firebase_example2/memoDetail.dart';
 import 'package:flutter/material.dart';
 
 class MemoPage extends StatefulWidget {
@@ -48,7 +49,19 @@ class _MemoPage extends State<MemoPage> {
                     padding: EdgeInsets.only(top: 20, bottom: 20),
                     child: SizedBox(
                       child: GestureDetector(
-                        onTap: (){},
+                        onTap: () async {
+                          Memo? memo = await Navigator.of(context).push(
+                            MaterialPageRoute<Memo>(
+                              builder: (BuildContext context) => MemoDetailPage(reference!, memos[index])
+                            )
+                          );
+                          if (memo != null) {
+                            setState(() {
+                              memos[index].title = memo.title;
+                              memos[index].content = memo.content;
+                            });
+                          }
+                        },
                         onLongPress: (){},
                         child: Text(memos[index].content),
                       ),
