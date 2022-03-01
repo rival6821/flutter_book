@@ -2,6 +2,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_example2/memoPage.dart';
 import 'package:firebase_example2/tabsPage.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 // void main() => runApp(MyApp());
@@ -27,12 +28,51 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       navigatorObservers: <NavigatorObserver>[observer],
-      home: MemoPage(),
+      home: FutureBuilder(
+        future: Firebase.initializeApp(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Error'),);
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            _initFirebaseMessaging(context);
+            _getToken();
+            return MemoPage();
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      )
       // home: FirebaseApp(
       //   analytics: analytics,
       //   observer: observer
       // ),
     );
+  }
+
+  _initFirebaseMessaging(BuildContext context) {
+    FirebaseMessaging.onMessage.listen((event) {
+      print(event.notification!.title);
+      print(event.notification!.body);
+      showDialog(context: context, builder: (BuildContext context){
+        return AlertDialog(
+          title: Text('알림'),
+          content: Text(event.notification!.body!),
+          actions: [
+            TextButton(onPressed: (){
+              Navigator.of(context).pop();
+            }, child: Text('Ok'))
+          ],
+        );
+      });
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((event) { });
+  }
+
+  _getToken() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    print('messaging.getToken(), ${await messaging.getToken()}');
   }
 }
 
